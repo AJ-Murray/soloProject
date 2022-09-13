@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Dashboard</title>
+</head>
+<body>
+    <nav class="d-flex justify-content-around align-items-center col-12 mt-2">
+        <h1 class="text-center">Welcome {{user.first_name}}!</h1>
+        <div class="d-flex col-4 justify-content-around">
+            <a href="/edit/account/{{user.id}}" class="link">My Account</a>
+            <a href="/logout" class="link">Logout</a>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-around text-center m-2 p-2">
+            <div class="col">
+                <div class="card-title">
+                    <h1>Recent Activity</h1>
+                </div>
+                {% for one_post in all_posts %}
+                <div class="card">
+                    <form action="/create/comment/{{one_post.id}}" method="post" class="">
+                        <div class="card-body">
+                            <div class="card-text border border-primary">
+                                <div>
+                                    <p>
+                                        {{one_post.maker.first_name}}
+                                    </p>
+                                    <p>
+                                        {{one_post.details}}
+                                    </p>
+                                </div>
+                                <div class="card-text">
+                                    <input type="text" name="comment" placeholder="Add Comment...">
+                                </div>
+                                <input type="submit" value="Add Comment" class="btn btn-primary">
+                                {% if one_post.user_id == session.user_id %}
+                                <p>
+                                    <a href="/delete/post/{{one_post.id}}">Delete</a>
+                                </p>
+                                {% endif %}
+                            </div>
+                            <div class="card-text border border-secondary">
+                                <h4>Comments:</h4>
+                                {% for one_comment in all_comments %}
+                                {% if one_comment.post_id == one_post.id %}
+                                <p>
+                                    {{one_comment.user_id.first_name}} {{one_comment.comment}}
+                                    {% if one_comment.user_id == session.user_id %}
+                                    <a href="/delete/comment/{{one_comment.id}}">Delete</a>
+                                </p>
+                                {% endif %}
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+            <form action="/create/post" method="post" class="col">
+                <div class="card-title">
+                    <h1>Add New Post</h1>
+                </div>
+                <div class="card">
+                    <div class="card-body mx-auto text-center">
+                        <input class="" type="text" name="details" placeholder="Type here..">
+                        <div>
+                            <input type="submit" value="Post" class="btn btn-primary">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
